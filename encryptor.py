@@ -3,7 +3,7 @@ import numpy as np
 import sys, hashlib, binascii
 import hash_image as hi
 import hashlib
-import decryptor.py as d  #For now
+import decryptor as d  #For now
 
 
 
@@ -24,11 +24,10 @@ def get_binary_message(message):
 
 if __name__ == "__main__":
 	h = hashlib.sha256()
-	h.update(h.encone("utf-8"))
 	message = sys.argv[1]
 	username = sys.argv[2]
-	h.update(sys.argv[3])   #This is the seed for the random number generator
-	
+	password = sys.argv[3]   #This is the seed for the random number generator
+	h.update(password.encode('utf-8'))
 	im = Image.open("Jake.jpg")
 	im.show()
 
@@ -44,26 +43,27 @@ if __name__ == "__main__":
 	#Vectorize numpy's function to convert to binary.
 	#This is so we can efficiently convert the whole 3D array
 	binary_repr_vec = np.vectorize(np.binary_repr)
-	binary_array = binary_repr_vec(rgb_array)
+	binary_array = binary_repr_vec(rgb_array, 8)
 
 
 
 
 	#Now lets work on the random number generator to get the indices of the picture to change
 	#Lets also convert our message and password.
-	hashed_password = h.digest()
-	np.random.seed(hashed_password)
+	seed = d.key_to_int(h.digest())
+	np.random.seed(seed)
 	message_bin = get_binary_message(message)
-	pass_as_int = d.key_to_int(hashed_password)
 
 	#How many random numbers do we need?
 	#We need the number of bits of the message divided by 2.
 	#We take the ceiling of that in case the number of bits is odd.
-	num_pixels_change = len(message_bin)/2  
+	num_pixels_change = int(len(message_bin)/2)  
 	#Now lets generate that many random numbers
 	#Need total number of pixels
 	width, height = im.size
 	total_num_pixels = width * height
 
 	#Alright now we can get the indices of the pixels to change
-	indices = hi.get_indices(hashed_password, num_pixels_to_change, width, height)
+	indices = hi.get_indices(seed, num_pixels_change, width, height)
+
+	altered_picture = alter_picture(binary_array, indices)
