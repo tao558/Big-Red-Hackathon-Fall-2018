@@ -38,9 +38,10 @@ def decrypt(directory, pwd):
 
 
 def key_to_int(key):
+    key = key.decode('utf-8', 'backslashreplace')
     st = ""
-    for val in key:
-        st += str(val)
+    for ch in key:
+        st += str(ord(ch))
     return int(st)%(2**32-1)
 
 print(decrypt('./slack-profile-picture.jpeg', 'sister-saster'))
