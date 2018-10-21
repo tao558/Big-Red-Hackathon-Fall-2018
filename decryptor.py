@@ -18,21 +18,35 @@ def decrypt(directory, pwd, n):
     pixels = list(orig_im.getdata())
     width, height = orig_im.size
     pixels = [pixels[i * width : (i+1) * width] for i in range(height)]
-    sequence = shared.get_indices(shared.key_to_int(pwd_hash.digest()), n, width, height)
+    seq_start_row, seq_start_col = 
+    shared.get_start_index(shared.key_to_int(pwd_hash.digest()), width, height)
+    length_bin = ''
+    for idx in range(12):  # set length
+        curr_row = seq_start_row + int((seq_start_col + idx)/width)
+        curr_col = (seq_start_col + idx)%width
+        if curr_row >= height:
+            curr_row = 0
+        pixel = pixels[curr_row][curr_col][0]  # component color value
+        length_bin += last_two_bits(pixel)
+        if idx == 11:  # update the starting row for rest of message
+            seq_start_row = curr_row
+            seq_start_col = curr_col
+    message_length = int(length_bin, 2)  # number of bits
     message = ''
     bits = ''
     enc_error_count = 0
-    for i in range(len(sequence)):
-        row = sequence[i][0]
-        col = sequence[i][1]
+    for i in range(message_length/2):  # number of pixels
+        row = seq_start_row + int((seq_start_col + i)/width)
+        col = (seq_start_col + i)%width
+        if curr_row >= height:
+            curr_row = 0
         pixel = pixels[row][col][0]
-        changed_bits = pixel%4  # last two bits
-        bits += str(int(changed_bits > 1)) + str(changed_bits%2)
+        bits += last_two_bits(pixel)  # bits of message
     for bit_idx in range(0, len(bits), 8):
         ch_bits = bits[bit_idx : bit_idx + 8]
-        asc = int(ch_bits, 2)
+        asc = int(ch_bits, 2)  # bits to ascii value
         if asc < 128:
-            message += chr(asc)
+            message += chr(asc)  # ascii value to char
         else:
             enc_error_count += 1
     if enc_error_count > 0:
@@ -51,3 +65,7 @@ def key_to_int(key):
     for ch in key:
         st += str(ord(ch))
     return int(st)%(2**32-1)
+
+def last_two_bits(dec_num):
+    dec_num = dec_num%4
+    return str(int(dec_num > 1)) + str(dec_num%2)
