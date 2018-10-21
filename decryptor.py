@@ -1,7 +1,7 @@
 from PIL import Image
 import hashlib
 import hash_image
-def decrypt(directory, pwd):
+def decrypt(directory, pwd, n):
     """
     This function will decrypt a message inside an image.
     :var directory: string ~ file path to image
@@ -9,19 +9,18 @@ def decrypt(directory, pwd):
     """
     pwd_hash = hashlib.sha256()
     pwd_hash.update(pwd.encode('utf-8'))
-
     orig_im = Image.open(directory)
     pixels = list(orig_im.getdata())
     width, height = orig_im.size
     pixels = [pixels[i * width : (i+1) * width] for i in range(height)]
-    sequence = hash_image.get_indices(key_to_int(pwd_hash.digest()), 100, width, height)
+    sequence = hash_image.get_indices(key_to_int(pwd_hash.digest()), n, width, height)
     message = ''
     bits = ''
     enc_error_count = 0
     for i in range(len(sequence)):
         row = sequence[i][0]
         col = sequence[i][1]
-        pixel = pixels[row][col][i%3]
+        pixel = pixels[row][col][0]
         changed_bits = pixel%4  # last two bits
         bits += str(int(changed_bits > 1)) + str(changed_bits%2)
     for bit_idx in range(0, len(bits), 8):
@@ -44,6 +43,5 @@ def key_to_int(key):
         st += str(ord(ch))
     return int(st)%(2**32-1)
 
-print(decrypt('./slack-profile-picture.jpeg', 'sister-saster'))
-        
+
 

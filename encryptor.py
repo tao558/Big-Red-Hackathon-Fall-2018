@@ -21,6 +21,29 @@ def get_binary_message(message):
 
 
 
+def alter_picture(picture, indices, message_bin):
+	altered_picture_list = picture.copy()
+	message_bin = list(message_bin)  #Convert to a list to use pop()
+	if (len(message_bin) / 2 != len(indices)):
+		raise RuntimeError("The message converted to binary should be exactly twice as long as the number of indices")
+	for i in range(len(indices)):
+		first_bit = message_bin.pop(0)
+		second_bit = message_bin.pop(0)
+		r = indices[i][0]
+		c = indices[i][1]
+		which_rgb = 0
+		original_bin = np.binary_repr(altered_picture_list[r][c][which_rgb], 8)
+		altered_bin = original_bin[:-2] + first_bit + second_bit
+		altered_picture_list[r][c][which_rgb] = int(altered_bin, 2)
+		print("Changed:", np.binary_repr(altered_picture_list[r][c][which_rgb], 8))
+
+	print("*"*12)
+
+	return Image.fromarray(altered_picture_list, 'RGB')
+
+
+
+
 
 if __name__ == "__main__":
 	h = hashlib.sha256()
@@ -28,25 +51,15 @@ if __name__ == "__main__":
 	username = sys.argv[2]
 	password = sys.argv[3]   #This is the seed for the random number generator
 	h.update(password.encode('utf-8'))
-	im = Image.open("Jake.jpg")
-	im.show()
+	original_im = Image.open("Jake.jpg")
+	
 
 
 
 	# This gets a 3 dimensional array of RBG data.
 	# First inner array is a row of pixels
 	# Each array in that row represent a pixel in RBG format	
-	rgb_array = np.asarray(im)
-
-
-
-	#Vectorize numpy's function to convert to binary.
-	#This is so we can efficiently convert the whole 3D array
-	binary_repr_vec = np.vectorize(np.binary_repr)
-	binary_array = binary_repr_vec(rgb_array, 8)
-
-
-
+	rgb_array = np.asarray(original_im)
 
 	#Now lets work on the random number generator to get the indices of the picture to change
 	#Lets also convert our message and password.
@@ -60,10 +73,25 @@ if __name__ == "__main__":
 	num_pixels_change = int(len(message_bin)/2)  
 	#Now lets generate that many random numbers
 	#Need total number of pixels
-	width, height = im.size
+	width, height = original_im.size
 	total_num_pixels = width * height
 
 	#Alright now we can get the indices of the pixels to change
 	indices = hi.get_indices(seed, num_pixels_change, width, height)
 
-	altered_picture = alter_picture(binary_array, indices)
+
+
+	altered_im = alter_picture(rgb_array, indices, message_bin)
+
+
+	#original_im.show()
+	#altered_im.show()
+	altered_im.save("Jake_altered.jpg")
+
+
+	#test = rgb_array == np.asarray(altered_im)
+	#print(False in test)
+	#print("encrypted bits:", message_bin)
+	
+	print("result:", d.decrypt("Jake_altered.jpg", password, num_pixels_change))
+
