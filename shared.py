@@ -17,7 +17,7 @@ def key_to_int(key):
 #p_col is the number of pixels per column
 def get_start_index(seed, p_row, p_col):
     p_total = p_row*p_col
-    start = key_to_int(seed)%p_total
+    start = seed%p_total
     start_col = start%p_row
     start_row = int(start/p_col)
-    return (row, col)
+    return (start_row, start_col)

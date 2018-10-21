@@ -15,7 +15,7 @@ def decrypt():
 
     directory = "stego_Jake.png" #input("What is the name of the picture?: ")
     #username = input("What is your username?: ")
-    pwd = "test password" #input("What is the password?: ")  #This is the seed for the random number generator
+    pwd = input("What is the password?: ")  #This is the seed for the random number generator
 
 
     pwd_hash = hashlib.sha256()
@@ -24,24 +24,23 @@ def decrypt():
     pixels = list(orig_im.getdata())
     width, height = orig_im.size
     pixels = [pixels[i * width : (i+1) * width] for i in range(height)]
-    seq_start_row, seq_start_col = 
-    shared.get_start_index(shared.key_to_int(pwd_hash.digest()), width, height)
+    seq_start_row, seq_start_col = shared.get_start_index(shared.key_to_int(pwd_hash.digest()), width, height)
     length_bin = ''
-    for idx in range(12):  # set length
+    for idx in range(6):  # set length
         curr_row = seq_start_row + int((seq_start_col + idx)/width)
         curr_col = (seq_start_col + idx)%width
         if curr_row >= height:
             curr_row = 0
         pixel = pixels[curr_row][curr_col][0]  # component color value
         length_bin += last_two_bits(pixel)
-        if idx == 11:  # update the starting row for rest of message
+        if idx == 5:  # update the starting row for rest of message
             seq_start_row = curr_row
-            seq_start_col = curr_col
+            seq_start_col = curr_col+1
     message_length = int(length_bin, 2)  # number of bits
     message = ''
     bits = ''
     enc_error_count = 0
-    for i in range(message_length/2):  # number of pixels
+    for i in range(message_length):  # number of pixels
         row = seq_start_row + int((seq_start_col + i)/width)
         col = (seq_start_col + i)%width
         if curr_row >= height:
