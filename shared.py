@@ -1,6 +1,16 @@
 import numpy as np
 
 
+
+def key_to_int(key):
+    key = key.decode('utf-8', 'backslashreplace')
+    st = ""
+    for ch in key:
+        st += str(ord(ch))
+    return int(st)%(2**32-1)
+
+
+
 #Seed is the seed for the RNG
 #n is the number of pixels to change
 #p_row is the number of pixels per row
