@@ -2,13 +2,19 @@ from PIL import Image
 import hashlib
 import shared
 import numpy as np
-import encryptor as e
-def decrypt(directory, pwd, n):
+
+def decrypt():
     """
     This function will decrypt a message inside an image.
     :var directory: string ~ file path to image
     :var pwd: string ~ password used to retrieve encryption. 
     """
+
+    directory = "stego_Jake.png" #input("What is the name of the picture?: ")
+    #username = input("What is your username?: ")
+    pwd = "test password" #input("What is the password?: ")  #This is the seed for the random number generator
+
+
     pwd_hash = hashlib.sha256()
     pwd_hash.update(pwd.encode('utf-8'))
     orig_im = Image.open(directory)
