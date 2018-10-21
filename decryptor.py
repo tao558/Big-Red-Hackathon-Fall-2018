@@ -6,7 +6,10 @@ def decrypt(directory, pwd, n):
     """
     This function will decrypt a message inside an image.
     :var directory: string ~ file path to image
-    :var pwd: string ~ password used to retrieve encryption. 
+    :var pwd: string ~ password used to retrieve encryption.
+    :var n: integer ~ number of pixels being altered
+    :return message: string ~ hidden message decrypted from image
+    This function will be updated to remove n from list of params
     """
     pwd_hash = hashlib.sha256()
     pwd_hash.update(pwd.encode('utf-8'))
@@ -21,11 +24,9 @@ def decrypt(directory, pwd, n):
     for i in range(len(sequence)):
         row = sequence[i][0]
         col = sequence[i][1]
-        pixel = pixels[row][col][0]  #Pixel is wrong
+        pixel = pixels[row][col][0]
         changed_bits = pixel%4  # last two bits
-        #print(np.binary_repr(changed_bits, 2)) #Wrong up to here
         bits += str(int(changed_bits > 1)) + str(changed_bits%2)
-    #print("bits is:", bits)
     for bit_idx in range(0, len(bits), 8):
         ch_bits = bits[bit_idx : bit_idx + 8]
         asc = int(ch_bits, 2)
@@ -40,6 +41,10 @@ def decrypt(directory, pwd, n):
 
 
 def key_to_int(key):
+    """
+    This function will take a string as an input and return
+    a nearly unique integer
+    """
     key = key.decode('utf-8', 'backslashreplace')
     st = ""
     for ch in key:
