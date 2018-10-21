@@ -34,7 +34,6 @@ def alter_picture(picture, starting_index, message_bin, width, height):
 		original_bin = np.binary_repr(altered_picture_list[curr_row][curr_col][which_rgb], 8)
 		altered_bin = original_bin[:-2] + first_bit + second_bit
 		altered_picture_list[curr_row][curr_col][which_rgb] = int(altered_bin, 2)
-
 		#Now update the row and column
 		curr_col += 1
 		if (curr_col >= width):
@@ -52,10 +51,10 @@ def alter_picture(picture, starting_index, message_bin, width, height):
 
 def encrypt():
 	h = hashlib.sha256()
-	message = "testing new features" #input("What is your message?: ")
+	message = input("What is your message?: ")
 	picture_filename = "Jake.jpg" #input("What is the name of the picture?: ")
 	#username = input("What is your username?: ")
-	password = "test password" #input("What is the password?: ")  #This is the seed for the random number generator
+	password = input("What is the password?: ")  #This is the seed for the random number generator
 	h.update(password.encode('utf-8'))
 	original_im = Image.open(picture_filename)
 	
@@ -86,7 +85,7 @@ def encrypt():
 
 
 
-	altered_im = alter_picture(rgb_array, starting_index, message_bin, width, height)
+	altered_im = alter_picture(rgb_array, starting_index, length_and_message_bin, width, height)
 
 	#Now lets save our new image
 	altered_im_filename = "stego_" + picture_filename.rsplit(".", 1)[0] + ".png"
