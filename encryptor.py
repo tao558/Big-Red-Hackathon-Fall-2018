@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageChops
 import numpy as np
 import sys, hashlib, binascii
 import hash_image as hi
@@ -35,12 +35,9 @@ def alter_picture(picture, indices, message_bin):
 		original_bin = np.binary_repr(altered_picture_list[r][c][which_rgb], 8)
 		altered_bin = original_bin[:-2] + first_bit + second_bit
 		altered_picture_list[r][c][which_rgb] = int(altered_bin, 2)
-		print("Changed:", np.binary_repr(altered_picture_list[r][c][which_rgb], 8))
 
-	print("*"*12)
 
 	return Image.fromarray(altered_picture_list, 'RGB')
-
 
 
 
@@ -51,7 +48,7 @@ if __name__ == "__main__":
 	username = sys.argv[2]
 	password = sys.argv[3]   #This is the seed for the random number generator
 	h.update(password.encode('utf-8'))
-	original_im = Image.open("Jake.jpg")
+	original_im = Image.open("sleepie.jpeg")
 	
 
 
@@ -64,13 +61,12 @@ if __name__ == "__main__":
 	#Now lets work on the random number generator to get the indices of the picture to change
 	#Lets also convert our message and password.
 	seed = d.key_to_int(h.digest())
-	np.random.seed(seed)
 	message_bin = get_binary_message(message)
 
 	#How many random numbers do we need?
 	#We need the number of bits of the message divided by 2.
-	#We take the ceiling of that in case the number of bits is odd.
 	num_pixels_change = int(len(message_bin)/2)  
+
 	#Now lets generate that many random numbers
 	#Need total number of pixels
 	width, height = original_im.size
@@ -84,14 +80,12 @@ if __name__ == "__main__":
 	altered_im = alter_picture(rgb_array, indices, message_bin)
 
 
-	#original_im.show()
-	#altered_im.show()
-	altered_im.save("Jake_altered.jpg")
+	altered_im.save("sleepie_altered.png")
+	altered_im.show()
 
+	print("result:", d.decrypt("sleepie_altered.png", password, num_pixels_change))
 
-	#test = rgb_array == np.asarray(altered_im)
-	#print(False in test)
-	#print("encrypted bits:", message_bin)
-	
-	print("result:", d.decrypt("Jake_altered.jpg", password, num_pixels_change))
-
+	#difference.show()
+	#Alright so maybe implement the difference function. Maybe make this a website? Or maybe
+	#make a crude website and post it on github for free? Basically I just want to make this more user
+	#friendly. Easier access and more intuitive design with some more features ultimately

@@ -12,8 +12,8 @@ def get_indices(seed, n, p_row, p_col):
     np.random.seed(seed)
     ans = list()
     for i in range(n):
-        row = np.random.randint(0, p_row)
-        col = np.random.randint(0, p_col)
+        row = np.random.randint(0, p_col)
+        col = np.random.randint(0, p_row)
         coords = (row, col)
         ans.append(coords)
     return ans

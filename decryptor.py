@@ -1,6 +1,7 @@
 from PIL import Image
 import hashlib
 import hash_image
+import numpy as np
 def decrypt(directory, pwd, n):
     """
     This function will decrypt a message inside an image.
@@ -20,9 +21,11 @@ def decrypt(directory, pwd, n):
     for i in range(len(sequence)):
         row = sequence[i][0]
         col = sequence[i][1]
-        pixel = pixels[row][col][0]
+        pixel = pixels[row][col][0]  #Pixel is wrong
         changed_bits = pixel%4  # last two bits
+        #print(np.binary_repr(changed_bits, 2)) #Wrong up to here
         bits += str(int(changed_bits > 1)) + str(changed_bits%2)
+    #print("bits is:", bits)
     for bit_idx in range(0, len(bits), 8):
         ch_bits = bits[bit_idx : bit_idx + 8]
         asc = int(ch_bits, 2)
