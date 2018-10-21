@@ -1,7 +1,7 @@
 from PIL import Image, ImageChops
 import numpy as np
 import sys, hashlib, binascii
-import hash_image as hi
+import shared
 import hashlib
 import decryptor as d  #For now
 
@@ -44,11 +44,12 @@ def alter_picture(picture, indices, message_bin):
 
 if __name__ == "__main__":
 	h = hashlib.sha256()
-	message = sys.argv[1]
-	username = sys.argv[2]
-	password = sys.argv[3]   #This is the seed for the random number generator
+	message = input("What is your message?: ")
+	picture_filename = input("What is the name of the picture?: ")
+	username = input("What is your username?: ")
+	password = input("What is the password?: ")  #This is the seed for the random number generator
 	h.update(password.encode('utf-8'))
-	original_im = Image.open("sleepie.jpeg")
+	original_im = Image.open(picture_filename)
 	
 
 
@@ -73,19 +74,20 @@ if __name__ == "__main__":
 	total_num_pixels = width * height
 
 	#Alright now we can get the indices of the pixels to change
-	indices = hi.get_indices(seed, num_pixels_change, width, height)
+	indices = shared.get_indices(seed, num_pixels_change, width, height)
 
 
 
 	altered_im = alter_picture(rgb_array, indices, message_bin)
 
-
-	altered_im.save("sleepie_altered.png")
+	#Now lets save our new image
+	altered_im_filename = "stego_" + picture_filename.rsplit(".", 1)[0] + ".png"
+	altered_im.save(altered_im_filename)
 	altered_im.show()
 
-	print("result:", d.decrypt("sleepie_altered.png", password, num_pixels_change))
+	print("result:", d.decrypt(altered_im_filename, password, num_pixels_change))
 
 	#difference.show()
-	#Alright so maybe implement the difference function. Maybe make this a website? Or maybe
-	#make a crude website and post it on github for free? Basically I just want to make this more user
-	#friendly. Easier access and more intuitive design with some more features ultimately
+	#Alright so maybe implement the difference function. Make this run as an exe so other people
+	#can easily run it. Also, implement some kind of functionality where user is asked repeatedly for
+	#This password, name of the image, and their message.

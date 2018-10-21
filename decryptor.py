@@ -1,7 +1,8 @@
 from PIL import Image
 import hashlib
-import hash_image
+import shared
 import numpy as np
+import encryptor as e
 def decrypt(directory, pwd, n):
     """
     This function will decrypt a message inside an image.
@@ -14,7 +15,7 @@ def decrypt(directory, pwd, n):
     pixels = list(orig_im.getdata())
     width, height = orig_im.size
     pixels = [pixels[i * width : (i+1) * width] for i in range(height)]
-    sequence = hash_image.get_indices(key_to_int(pwd_hash.digest()), n, width, height)
+    sequence = shared.get_indices(shared.key_to_int(pwd_hash.digest()), n, width, height)
     message = ''
     bits = ''
     enc_error_count = 0
@@ -45,6 +46,3 @@ def key_to_int(key):
     for ch in key:
         st += str(ord(ch))
     return int(st)%(2**32-1)
-
-
-
