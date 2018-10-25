@@ -52,7 +52,7 @@ def alter_picture(picture, starting_index, message_bin, width, height):
 def encrypt():
 	h = hashlib.sha256()
 	message = input("What is your message?: ")
-	picture_filename = "Jake.jpg" #input("What is the name of the picture?: ")
+	picture_filename = input("What is the name of the picture?: ")
 	#username = input("What is your username?: ")
 	password = input("What is the password?: ")  #This is the seed for the random number generator
 	h.update(password.encode('utf-8'))

@@ -15,3 +15,4 @@ if __name__ == "__main__":
 		print("Invalid mode. Exiting.")   #Eventually make this so that it loops until valid input is entered
 
 
+	input("\nPress Enter key to quit")

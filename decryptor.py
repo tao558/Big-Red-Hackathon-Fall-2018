@@ -13,7 +13,7 @@ def decrypt():
     This function will be updated to remove n from list of params
     """
 
-    directory = "stego_Jake.png" #input("What is the name of the picture?: ")
+    directory = input("What is the name of the picture?: ")
     #username = input("What is your username?: ")
     pwd = input("What is the password?: ")  #This is the seed for the random number generator
 
