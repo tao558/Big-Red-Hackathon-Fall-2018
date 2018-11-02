@@ -57,7 +57,7 @@ def decrypt():
     if enc_error_count > 0:
         print("There were", enc_error_count, "encoding errors.")
         print("Output may not return expected result")
-    return message
+    print(message)
 
 
 def key_to_int(key):
@@ -74,3 +74,5 @@ def key_to_int(key):
 def last_two_bits(dec_num):
     dec_num = dec_num%4
     return str(int(dec_num > 1)) + str(dec_num%2)
+
+decrypt()
