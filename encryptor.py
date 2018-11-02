@@ -97,3 +97,5 @@ def encrypt():
 	#Alright so maybe implement the difference function. Make this run as an exe so other people
 	#can easily run it. Also, implement some kind of functionality where user is asked repeatedly for
 	#This password, name of the image, and their message.
+
+encrypt()
