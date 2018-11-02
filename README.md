@@ -1,7 +1,5 @@
 # Big-Red-Hacks-Fall-2018
 
-## What are we doing?
-
 Big-Red-Hacks-Fall-2018
 
 ### Cornell University, October 19-21
